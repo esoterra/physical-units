@@ -2,7 +2,7 @@ use std::ops::{Add, Div, Mul, Sub};
 
 use thiserror::Error;
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Default, Clone, Copy, PartialEq, Eq)]
 pub struct BaseUnit {
     /// kilogram (kg)
     pub(crate) kilogram: i8,

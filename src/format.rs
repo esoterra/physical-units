@@ -2,13 +2,46 @@ use core::fmt;
 
 use crate::{base, derived};
 
+impl fmt::Debug for base::BaseUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if *self == base::UNITLESS {
+            return write!(f, "BaseUnit::UNITLESS");
+        }
+
+        let components = [
+            (self.kilogram, "kilogram"),
+            (self.meter, "meter"),
+            (self.second, "second"),
+            (self.mole, "mole"),
+            (self.ampere, "ampere"),
+            (self.kelvin, "kelvin"),
+            (self.candela, "candela"),
+        ];
+
+        write!(f, "BaseUnit(")?;
+
+        let mut is_first = true;
+        for (n, symbol) in components {
+            if n != 0 {
+                if !is_first {
+                    write!(f, "⋅")?;
+                }
+                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                is_first = false;
+            }
+        }
+
+        write!(f, ")")
+    }
+}
+
 impl fmt::Display for base::BaseUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if *self == base::UNITLESS {
-            return write!(f, "unitless");
+            return write!(f, "Unitless");
         }
 
-        let array = [
+        let components = [
             (self.kilogram, "kg"),
             (self.meter, "m"),
             (self.second, "s"),
@@ -19,7 +52,7 @@ impl fmt::Display for base::BaseUnit {
         ];
 
         let mut is_first = true;
-        for (n, symbol) in array.iter() {
+        for (n, symbol) in components.iter() {
             let n = *n;
             if n > 0 {
                 if !is_first {
@@ -30,16 +63,16 @@ impl fmt::Display for base::BaseUnit {
             }
         }
 
-        let negatives = array.iter().filter(|(n, _)| *n < 0).count();
+        let negatives = components.iter().filter(|(n, _)| *n < 0).count();
         if negatives != 0 {
-            write!(f, " / ")?;
+            write!(f, "/")?;
 
             if negatives > 1 {
                 write!(f, "(")?;
             }
 
             let mut is_first = true;
-            for (n, symbol) in array.iter() {
+            for (n, symbol) in components.iter() {
                 let n = -*n;
                 if n > 0 {
                     if !is_first {
@@ -63,17 +96,72 @@ where
     Number: fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", self.number, self.unit)
+        if self.unit == base::UNITLESS {
+            write!(f, "{}", self.number)
+        } else {
+            write!(f, "{} {}", self.number, self.unit)
+        }
+    }
+}
+
+impl fmt::Debug for derived::DerivedUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if *self == derived::UNITLESS {
+            return write!(f, "DerivedUnit::UNITLESS");
+        }
+
+        let components = [
+            (self.base.kilogram, "kilogram"),
+            (self.base.meter, "meter"),
+            (self.base.second, "second"),
+            (self.base.mole, "mole"),
+            (self.base.ampere, "ampere"),
+            (self.base.kelvin, "kelvin"),
+            (self.base.candela, "candela"),
+            (self.hertz, "hertz"),
+            (self.newton, "newton"),
+            (self.pascal, "pascal"),
+            (self.joule, "joule"),
+            (self.watt, "watt"),
+            (self.coulomb, "coulomb"),
+            (self.volt, "volt"),
+            (self.farad, "farad"),
+            (self.ohm, "ohm"),
+            (self.siemens, "siemens"),
+            (self.weber, "weber"),
+            (self.tesla, "tesla"),
+            (self.henry, "henry"),
+            (self.lux, "lux"),
+            (self.becquerel, "becquerel"),
+            (self.gray, "gray"),
+            (self.sievert, "sievert"),
+            (self.katal, "katal"),
+        ];
+
+        write!(f, "DerivedUnit(")?;
+
+        let mut is_first = true;
+        for (n, symbol) in components {
+            if n != 0 {
+                if !is_first {
+                    write!(f, "⋅")?;
+                }
+                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                is_first = false;
+            }
+        }
+
+        write!(f, ")")
     }
 }
 
 impl fmt::Display for derived::DerivedUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if *self == derived::UNITLESS {
-            return write!(f, "unitless");
+            return write!(f, "Unitless");
         }
 
-        let array = [
+        let components = [
             (self.base.kilogram, "kg"),
             (self.base.meter, "m"),
             (self.base.second, "s"),
@@ -102,7 +190,7 @@ impl fmt::Display for derived::DerivedUnit {
         ];
 
         let mut is_first = true;
-        for (n, symbol) in array.iter() {
+        for (n, symbol) in components.iter() {
             let n = *n;
             if n > 0 {
                 if !is_first {
@@ -113,16 +201,16 @@ impl fmt::Display for derived::DerivedUnit {
             }
         }
 
-        let negatives = array.iter().filter(|(n, _)| *n < 0).count();
+        let negatives = components.iter().filter(|(n, _)| *n < 0).count();
         if negatives != 0 {
-            write!(f, " / ")?;
+            write!(f, "/")?;
 
             if negatives > 1 {
                 write!(f, "(")?;
             }
 
             let mut is_first = true;
-            for (n, symbol) in array.iter() {
+            for (n, symbol) in components.iter() {
                 let n = -*n;
                 if n > 0 {
                     if !is_first {
@@ -146,7 +234,11 @@ where
     Number: fmt::Display,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} {}", self.number, self.unit)
+        if self.unit == derived::UNITLESS {
+            write!(f, "{}", self.number)
+        } else {
+            write!(f, "{} {}", self.number, self.unit)
+        }
     }
 }
 
@@ -227,7 +319,7 @@ mod tests {
             candela: 0,
             kilogram: 1,
         };
-        assert_eq!(String::from("kg⋅m / s²"), format!("{}", unit));
+        assert_eq!(String::from("kg⋅m/s²"), format!("{}", unit));
     }
 
     #[test]
@@ -264,7 +356,17 @@ mod tests {
             sievert: -2,
             ..derived::UNITLESS
         };
-        assert_eq!(String::from("F / Sv²"), format!("{}", unit));
+        assert_eq!(String::from("F/Sv²"), format!("{}", unit));
+    }
+
+    #[test]
+    fn test_derived_unit_debug() {
+        let unit = derived::DerivedUnit {
+            farad: 1,
+            sievert: -2,
+            ..derived::UNITLESS
+        };
+        assert_eq!(String::from("DerivedUnit(farad⋅sievert⁻²)"), format!("{:?}", unit));
     }
 
     #[test]

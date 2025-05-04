@@ -4,7 +4,7 @@ use thiserror::Error;
 
 use crate::base::{self, BaseUnit};
 
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct DerivedUnit {
     /// remaining base units
     pub(crate) base: BaseUnit,

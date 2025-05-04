@@ -16,7 +16,7 @@ Any SI unit can be represented as the powers of the seven SI base units that mul
 | kelvin | K | temperature |
 | candela | cd | luminosity |
 
-For example, 1 newton (1 N) is equal to one kilogram meter per second squared (1 kg⋅m / s²),
+For example, 1 newton (1 N) is equal to one kilogram meter per second squared (1 kg⋅m/s²),
 which can be represented a `(1, 1, -2, 0, 0, 0, 0)` where each value corresponds to the exponent
 of an SI base unit. This is how the `BaseUnit` type represents units.
 
@@ -35,7 +35,7 @@ which can be useful for talking about common combinations of base units.
 | pascal | Pa | pressure, stress | kg⋅m⁻¹⋅s⁻² |
 | joule | J | energy, work, heat | kg⋅m²⋅s⁻² |
 | watt | W | power, radiant flux | kg⋅m²⋅s⁻³ |
-| coloumb | C | electrical charge | s⋅A |
+| coulomb | C | electrical charge | s⋅A |
 | volt | V | voltage, electrical potential difference | kg⋅m²⋅s⁻³⋅A⁻¹ |
 | farad | F | electrical capacitance | kg⁻¹⋅m⁻2⋅s³⋅A² |
 | ohm | Ω | electrical resistance | kg⋅m²⋅s⁻³⋅A⁻² |
@@ -58,7 +58,7 @@ of specifically which base and derived units were specified.
 Units represented this way are encoded using 7 base exponents
 and 18 **additional** exponents for the derived units!
 This is **NOT** a minimal encoding of the unit information but
-the redundancy allows us to distinguish between `"N"` and `"kg m / s²"`.
+the redundancy allows us to distinguish between `"N"` and `"kg⋅m/s²"`.
 
 > [!NOTE]
 > The `derived` module provides representations of the base and derived SI units in terms of base and derived units
@@ -92,12 +92,17 @@ which applies identities which reduce the sum of absolute exponents.
 
 ## Formatting
 
-All of the unit types have a basic derived `Debug` implementation
-and a pretty-printed `Display` implementation.
+All of the unit types have a pretty-printed `Display` implementation.
 
 The `Display` implementation operates at the level of abstraction of the unit type it's for.
-* `BaseUnit` - `"kg⋅m / s²"`
-* `DerivedUnit` - `"N"` OR `"kg⋅m / s²"` (depending on how it was constructed)
+* `BaseUnit` - `"kg⋅m/s²"`
+* `DerivedUnit` - `"N"` OR `"kg⋅m/s²"` (depending on how it was constructed)
+
+They also have a `Debug` implementation that uses the full names of units and doesn't use `/` or parenthesis.
+
+* `BaseUnit` - `"BaseUnit(kg⋅m⋅s⁻²)"`
+* `DerivedUnit` - `"DerivedUnit(N)"` OR `"DerivedUnit(kg⋅m⋅s⁻²)"`
+
 
 ## Parsing
 
