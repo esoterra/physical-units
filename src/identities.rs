@@ -164,3 +164,27 @@ pub const KATAL_IDENTITY: DerivedUnit = DerivedUnit {
     katal: 1,
     ..UNITLESS
 };
+
+#[cfg(test)]
+mod tests {
+    use crate::derived;
+
+    use super::*;
+
+    #[test]
+    fn test_basic_identities() {
+        for identity in BASIC_IDENTITIES {
+            let expected = derived::UNITLESS;
+            let actual = identity;
+            assert_eq!(expected, actual, "{expected} != {actual}");
+        }
+    }
+    #[test]
+    fn test_extra_identities() {
+        for identity in EXTRA_IDENTITIES {
+            let expected = derived::UNITLESS;
+            let actual = identity;
+            assert_eq!(expected, actual, "{expected} != {actual}");
+        }
+    }
+}
