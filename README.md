@@ -25,7 +25,7 @@ of an SI base unit. This is how the `BaseUnit` type represents units.
 
 ## Derived Units
 
-In addition to the base units, there are also SI base units
+In addition to the base units, there are also SI derived units
 which can be useful for talking about common combinations of base units.
 
 | Name | Symbol | Quantity | SI Base Units |
