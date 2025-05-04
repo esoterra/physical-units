@@ -96,8 +96,8 @@ All of the unit types have a basic derived `Debug` implementation
 and a pretty-printed `Display` implementation.
 
 The `Display` implementation operates at the level of abstraction of the unit type it's for.
-* `BaseUnit` - `"kg⋅m⋅/ s²"`
-* `DerivedUnit` - `"N"` OR `"kg⋅m⋅/ s²"` (depending on how it was constructed)
+* `BaseUnit` - `"kg⋅m / s²"`
+* `DerivedUnit` - `"N"` OR `"kg⋅m / s²"` (depending on how it was constructed)
 
 ## Parsing
 
