@@ -18,15 +18,15 @@ impl fmt::Display for base::BaseUnit {
             (self.candela, "cd"),
         ];
 
-        let mut had_superscript = true;
+        let mut is_first = true;
         for (n, symbol) in array.iter() {
             let n = *n;
             if n > 0 {
-                if !had_superscript {
-                    write!(f, " ")?;
+                if !is_first {
+                    write!(f, "⋅")?;
                 }
                 write!(f, "{symbol}{}", SignedSuperscript { n })?;
-                had_superscript = n > 1;
+                is_first = false;
             }
         }
 
@@ -38,15 +38,15 @@ impl fmt::Display for base::BaseUnit {
                 write!(f, "(")?;
             }
 
-            let mut had_superscript = true;
+            let mut is_first = true;
             for (n, symbol) in array.iter() {
                 let n = -*n;
                 if n > 0 {
-                    if !had_superscript {
-                        write!(f, " ")?;
+                    if !is_first {
+                        write!(f, "⋅")?;
                     }
                     write!(f, "{symbol}{}", SignedSuperscript { n })?;
-                    had_superscript = n > 1;
+                    is_first = false;
                 }
             }
 
@@ -101,15 +101,15 @@ impl fmt::Display for derived::DerivedUnit {
             (self.katal, "kat"),
         ];
 
-        let mut had_superscript = true;
+        let mut is_first = true;
         for (n, symbol) in array.iter() {
             let n = *n;
             if n > 0 {
-                if !had_superscript {
-                    write!(f, " ")?;
+                if !is_first {
+                    write!(f, "⋅")?;
                 }
                 write!(f, "{symbol}{}", SignedSuperscript { n })?;
-                had_superscript = n > 1;
+                is_first = false;
             }
         }
 
@@ -121,15 +121,15 @@ impl fmt::Display for derived::DerivedUnit {
                 write!(f, "(")?;
             }
 
-            let mut had_superscript = true;
+            let mut is_first = true;
             for (n, symbol) in array.iter() {
                 let n = -*n;
                 if n > 0 {
-                    if !had_superscript {
-                        write!(f, " ")?;
+                    if !is_first {
+                        write!(f, "⋅")?;
                     }
                     write!(f, "{symbol}{}", SignedSuperscript { n })?;
-                    had_superscript = n > 1;
+                    is_first = false;
                 }
             }
 
@@ -227,7 +227,7 @@ mod tests {
             candela: 0,
             kilogram: 1,
         };
-        assert_eq!(String::from("kg m / s²"), format!("{}", unit));
+        assert_eq!(String::from("kg⋅m / s²"), format!("{}", unit));
     }
 
     #[test]
