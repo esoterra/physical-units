@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Wasm Template Compiler</h1>
+  <h1>Physical Units</h1>
 
   <p>
     <strong>A library for working with values that have physical units in a simple sound way</strong>
