@@ -1,6 +1,16 @@
-# Physical Units
+<div align="center">
+  <h1>Wasm Template Compiler</h1>
 
-A library for working with values that have physical units in a simple sound way.
+  <p>
+    <strong>A library for working with values that have physical units in a simple sound way</strong>
+  </p>
+
+  <p>
+    <a href="https://crates.io/crates/physical-units"><img src="https://img.shields.io/crates/v/physical-units.svg?style=flat-square" alt="Crates.io version" /></a>
+    <a href="https://crates.io/crates/physical-units"><img src="https://img.shields.io/crates/d/physical-units.svg?style=flat-square" alt="Download" /></a>
+    <a href="https://docs.rs/physical-units"><img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square" alt="docs.rs docs" /></a>
+  </p>
+</div>
 
 ## Base Units
 
@@ -19,9 +29,6 @@ Any SI unit can be represented as the powers of the seven SI base units that mul
 For example, 1 newton (1 N) is equal to one kilogram meter per second squared (1 kg⋅m/s²),
 which can be represented a `(1, 1, -2, 0, 0, 0, 0)` where each value corresponds to the exponent
 of an SI base unit. This is how the `BaseUnit` type represents units.
-
-> [!NOTE]
-> The `base` module provides representations of the base and derived SI units in terms of base units
 
 ## Derived Units
 
@@ -59,9 +66,6 @@ Units represented this way are encoded using 7 base exponents
 and 18 **additional** exponents for the derived units!
 This is **NOT** a minimal encoding of the unit information but
 the redundancy allows us to distinguish between `"N"` and `"kg⋅m/s²"`.
-
-> [!NOTE]
-> The `derived` module provides representations of the base and derived SI units in terms of base and derived units
 
 ## Arithmetic
 
