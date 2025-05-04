@@ -1,5 +1,9 @@
 [package]
 name = "physical-units"
+description = " A library for working with values that have physical units in a simple sound way."
+readme = "README.md"
+author = "Robin Brown"
+license = "MIT"
 version = "0.1.0"
 edition = "2024"
 
