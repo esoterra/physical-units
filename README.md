@@ -100,8 +100,8 @@ The `Display` implementation operates at the level of abstraction of the unit ty
 
 They also have a `Debug` implementation that uses the full names of units and doesn't use `/` or parenthesis.
 
-* `BaseUnit` - `"BaseUnit(kg⋅m⋅s⁻²)"`
-* `DerivedUnit` - `"DerivedUnit(N)"` OR `"DerivedUnit(kg⋅m⋅s⁻²)"`
+* `BaseUnit` - `"BaseUnit(kilogram⋅meter⋅second⁻²)"`
+* `DerivedUnit` - `"DerivedUnit(newton)"` OR `"DerivedUnit(kilogram⋅meter⋅second⁻²)"`
 
 
 ## Parsing
