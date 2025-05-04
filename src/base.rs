@@ -208,8 +208,150 @@ pub const KILOGRAM: BaseUnit = BaseUnit {
     ..UNITLESS
 };
 
+/// meters squared (m²)
 pub const METER_SQ: BaseUnit = BaseUnit {
     meter: 2,
+    ..UNITLESS
+};
+
+/// hertz (Hz)
+pub const HERTZ: BaseUnit = BaseUnit {
+    second: -1,
+    ..UNITLESS
+};
+
+/// newton (N)
+pub const NEWTON: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: 1,
+    second: -2,
+    ..UNITLESS
+};
+
+/// pascal (Pa)
+pub const PASCAL: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: -1,
+    second: -2,
+    ..UNITLESS
+};
+
+/// joule (J)
+pub const JOULE: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: 2,
+    second: -2,
+    ..UNITLESS
+};
+
+/// watt (W)
+pub const WATT: BaseUnit = BaseUnit {
+    meter: 2,
+    second: -3,
+    kilogram: 1,
+    ..UNITLESS
+};
+
+/// coulomb (C)
+pub const COULOMB: BaseUnit = BaseUnit {
+    second: 1,
+    ampere: 1,
+    ..UNITLESS
+};
+
+/// volt (V)
+pub const VOLT: BaseUnit = BaseUnit {
+    meter: 2,
+    second: -3,
+    ampere: -1,
+    kilogram: 1,
+    ..UNITLESS
+};
+
+/// farad (F)
+pub const FARAD: BaseUnit = BaseUnit {
+    meter: -2,
+    second: 4,
+    ampere: 2,
+    kilogram: -1,
+    ..UNITLESS
+};
+
+/// ohm (Ω)
+pub const OHM: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: 2,
+    second: -3,
+    ampere: -2,
+    ..UNITLESS
+};
+
+/// siemens (S)
+pub const SIEMENS: BaseUnit = BaseUnit {
+    kilogram: -1,
+    meter: -2,
+    second: 3,
+    ampere: 2,
+    ..UNITLESS
+};
+
+/// weber (Wb)
+pub const WEBER: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: 2,
+    second: -2,
+    ampere: -1,
+    ..UNITLESS
+};
+
+/// tesla (T)
+pub const TESLA: BaseUnit = BaseUnit {
+    kilogram: 1,
+    second: -2,
+    ampere: -1,
+    ..UNITLESS
+};
+
+/// henry (H)
+pub const HENRY: BaseUnit = BaseUnit {
+    kilogram: 1,
+    meter: 2,
+    second: -2,
+    ampere: -2,
+    ..UNITLESS
+};
+
+/// lux (lx)
+pub const LUX: BaseUnit = BaseUnit {
+    meter: -2,
+    candela: 1,
+    ..UNITLESS
+};
+
+/// becquerel (Bq)
+pub const BECQUEREL: BaseUnit = BaseUnit {
+    second: -1,
+    ..UNITLESS
+};
+
+/// gray (Gy)
+pub const GRAY: BaseUnit = BaseUnit {
+    meter: 2,
+    second: -2,
+    ..UNITLESS
+};
+
+/// sievert (Sv)
+pub const SIEVERT: BaseUnit = BaseUnit {
+    meter: 2,
+    second: -2,
+    ..UNITLESS
+};
+
+/// katal (kat)
+pub const KATAL: BaseUnit = BaseUnit {
+    second: -1,
+    mole: 1,
     ..UNITLESS
 };
 
@@ -263,5 +405,64 @@ mod tests {
             number: 2f32,
         };
         assert_eq!(one_second, (two_seconds - one_second).unwrap());
+    }
+
+    #[test]
+    fn test_base_identities() {
+        assert_eq!(HERTZ, UNITLESS / SECOND);
+
+        assert_eq!(
+            NEWTON,
+            KILOGRAM * METER / (SECOND * SECOND)
+        );
+
+        assert_eq!(PASCAL, NEWTON / (METER * METER));
+
+        assert_eq!(JOULE, METER * NEWTON);
+        assert_eq!(JOULE, COULOMB * VOLT);
+        assert_eq!(JOULE, WATT * SECOND);
+
+        assert_eq!(WATT, JOULE / SECOND);
+        assert_eq!(WATT, VOLT * AMPERE);
+
+        assert_eq!(COULOMB, SECOND * AMPERE);
+        assert_eq!(COULOMB, FARAD * VOLT);
+
+        assert_eq!(VOLT, WATT / AMPERE);
+        assert_eq!(VOLT, JOULE / COULOMB);
+
+        assert_eq!(FARAD, COULOMB / VOLT);
+        assert_eq!(FARAD, SECOND / OHM);
+
+        assert_eq!(OHM, UNITLESS / SIEMENS);
+        assert_eq!(OHM, VOLT / AMPERE);
+
+        assert_eq!(SIEMENS, UNITLESS / OHM);
+        assert_eq!(SIEMENS, AMPERE / VOLT);
+
+        assert_eq!(WEBER, JOULE / AMPERE);
+        assert_eq!(WEBER, TESLA * METER * METER);
+        assert_eq!(WEBER, VOLT * SECOND);
+
+        assert_eq!(
+            TESLA,
+            VOLT * SECOND / (METER * METER)
+        );
+        assert_eq!(TESLA, WEBER / (METER * METER));
+        assert_eq!(TESLA, NEWTON / (AMPERE * METER));
+
+        assert_eq!(HENRY, VOLT * SECOND / AMPERE);
+        assert_eq!(HENRY, OHM * SECOND);
+        assert_eq!(HENRY, WEBER / AMPERE);
+
+        assert_eq!(LUX, CANDELA / (METER * METER));
+
+        assert_eq!(BECQUEREL, UNITLESS / SECOND);
+
+        assert_eq!(GRAY, JOULE / KILOGRAM);
+
+        assert_eq!(SIEVERT, JOULE / KILOGRAM);
+
+        assert_eq!(KATAL, MOLE / SECOND);
     }
 }

@@ -281,283 +281,75 @@ pub const METER_SQ: DerivedUnit = DerivedUnit {
 };
 
 /// hertz (Hz)
-pub const HERTZ_BASE: BaseUnit = BaseUnit {
-    meter: 0,
-    second: -1,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-    kilogram: 0,
-};
-
-pub const HERTZ_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(HERTZ_BASE),
-    hertz: 1,
-    ..UNITLESS
-};
-
 pub const HERTZ: DerivedUnit = DerivedUnit {
     hertz: 1,
     ..UNITLESS
 };
 
 /// newton (N)
-pub const NEWTON_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 1,
-    second: -2,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const NEWTON_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(NEWTON_BASE),
-    newton: 1,
-    ..UNITLESS
-};
-
 pub const NEWTON: DerivedUnit = DerivedUnit {
     newton: 1,
     ..UNITLESS
 };
 
 /// pascal (Pa)
-pub const PASCAL_BASE: BaseUnit = BaseUnit {
-    meter: -1,
-    second: -2,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-    kilogram: 1,
-};
-
-pub const PASCAL_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(PASCAL_BASE),
-    pascal: 1,
-    ..UNITLESS
-};
-
 pub const PASCAL: DerivedUnit = DerivedUnit {
     pascal: 1,
     ..UNITLESS
 };
 
 /// joule (J)
-pub const JOULE_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 2,
-    second: -2,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const JOULE_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(JOULE_BASE),
-    joule: 1,
-    ..UNITLESS
-};
-
 pub const JOULE: DerivedUnit = DerivedUnit {
     joule: 1,
     ..UNITLESS
 };
 
 /// watt (W)
-pub const WATT_BASE: BaseUnit = BaseUnit {
-    meter: 2,
-    second: -3,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-    kilogram: 1,
-};
-
-pub const WATT_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(WATT_BASE),
-    watt: 1,
-    ..UNITLESS
-};
-
 pub const WATT: DerivedUnit = DerivedUnit {
     watt: 1,
     ..UNITLESS
 };
 
 /// coulomb (C)
-pub const COULOMB_BASE: BaseUnit = BaseUnit {
-    meter: 0,
-    second: 1,
-    mole: 0,
-    ampere: 1,
-    kelvin: 0,
-    candela: 0,
-    kilogram: 0,
-};
-
-pub const COULOMB_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(COULOMB_BASE),
-    coulomb: 1,
-    ..UNITLESS
-};
-
 pub const COULOMB: DerivedUnit = DerivedUnit {
     coulomb: 1,
     ..UNITLESS
 };
 
 /// volt (V)
-pub const VOLT_BASE: BaseUnit = BaseUnit {
-    meter: 2,
-    second: -3,
-    mole: 0,
-    ampere: -1,
-    kelvin: 0,
-    candela: 0,
-    kilogram: 1,
-};
-
-pub const VOLT_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(VOLT_BASE),
-    volt: 1,
-    ..UNITLESS
-};
-
 pub const VOLT: DerivedUnit = DerivedUnit {
     volt: 1,
     ..UNITLESS
 };
 
 /// farad (F)
-pub const FARAD_BASE: BaseUnit = BaseUnit {
-    meter: -2,
-    second: 4,
-    mole: 0,
-    ampere: 2,
-    kelvin: 0,
-    candela: 0,
-    kilogram: -1,
-};
-
-pub const FARAD_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(FARAD_BASE),
-    farad: 1,
-    ..UNITLESS
-};
-
 pub const FARAD: DerivedUnit = DerivedUnit {
     farad: 1,
     ..UNITLESS
 };
 
 /// ohm (Ω)
-pub const OHM_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 2,
-    second: -3,
-    mole: 0,
-    ampere: -2,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const OHM_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(OHM_BASE),
-    ohm: 1,
-    ..UNITLESS
-};
-
 pub const OHM: DerivedUnit = DerivedUnit { ohm: 1, ..UNITLESS };
 
 /// siemens (S)
-pub const SIEMENS_BASE: BaseUnit = BaseUnit {
-    kilogram: -1,
-    meter: -2,
-    second: 3,
-    mole: 0,
-    ampere: 2,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const SIEMENS_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(SIEMENS_BASE),
-    siemens: 1,
-    ..UNITLESS
-};
-
 pub const SIEMENS: DerivedUnit = DerivedUnit {
     siemens: 1,
     ..UNITLESS
 };
 
 /// weber (Wb)
-pub const WEBER_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 2,
-    second: -2,
-    mole: 0,
-    ampere: -1,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const WEBER_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(WEBER_BASE),
-    weber: 1,
-    ..UNITLESS
-};
-
 pub const WEBER: DerivedUnit = DerivedUnit {
     weber: 1,
     ..UNITLESS
 };
 
 /// tesla (T)
-pub const TESLA_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 0,
-    second: -2,
-    mole: 0,
-    ampere: -1,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const TESLA_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(TESLA_BASE),
-    tesla: 1,
-    ..UNITLESS
-};
-
 pub const TESLA: DerivedUnit = DerivedUnit {
     tesla: 1,
     ..UNITLESS
 };
 
 /// henry (H)
-pub const HENRY_BASE: BaseUnit = BaseUnit {
-    kilogram: 1,
-    meter: 2,
-    second: -2,
-    mole: 0,
-    ampere: -2,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const HENRY_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(HENRY_BASE),
-    henry: 1,
-    ..UNITLESS
-};
-
 pub const HENRY: DerivedUnit = DerivedUnit {
     henry: 1,
     ..UNITLESS
@@ -567,108 +359,29 @@ pub const HENRY: DerivedUnit = DerivedUnit {
 
 // TODO: lumen (lm)
 
+
 /// lux (lx)
-pub const LUX_BASE: BaseUnit = BaseUnit {
-    kilogram: 0,
-    meter: -2,
-    second: 0,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 1,
-};
-
-pub const LUX_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(LUX_BASE),
-    lux: 1,
-    ..UNITLESS
-};
-
 pub const LUX: DerivedUnit = DerivedUnit { lux: 1, ..UNITLESS };
 
 /// becquerel (Bq)
-pub const BECQUEREL_BASE: BaseUnit = BaseUnit {
-    kilogram: 0,
-    meter: 0,
-    second: -1,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const BECQUEREL_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(BECQUEREL_BASE),
-    becquerel: 1,
-    ..UNITLESS
-};
-
 pub const BECQUEREL: DerivedUnit = DerivedUnit {
     becquerel: 1,
     ..UNITLESS
 };
 
 /// gray (Gy)
-pub const GRAY_BASE: BaseUnit = BaseUnit {
-    kilogram: 0,
-    meter: 2,
-    second: -2,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const GRAY_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(GRAY_BASE),
-    gray: 1,
-    ..UNITLESS
-};
-
 pub const GRAY: DerivedUnit = DerivedUnit {
     gray: 1,
     ..UNITLESS
 };
 
 /// sievert (Sv)
-pub const SIEVERT_BASE: BaseUnit = BaseUnit {
-    kilogram: 0,
-    meter: 2,
-    second: -2,
-    mole: 0,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const SIEVERT_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(SIEVERT_BASE),
-    sievert: 1,
-    ..UNITLESS
-};
-
 pub const SIEVERT: DerivedUnit = DerivedUnit {
     sievert: 1,
     ..UNITLESS
 };
 
 /// katal (kat)
-pub const KATAL_BASE: BaseUnit = BaseUnit {
-    kilogram: 0,
-    meter: 0,
-    second: -1,
-    mole: 1,
-    ampere: 0,
-    kelvin: 0,
-    candela: 0,
-};
-
-pub const KATAL_IDENTITY: DerivedUnit = DerivedUnit {
-    base: base::UNITLESS.divide(KATAL_BASE),
-    katal: 1,
-    ..UNITLESS
-};
-
 pub const KATAL: DerivedUnit = DerivedUnit {
     katal: 1,
     ..UNITLESS
@@ -676,65 +389,5 @@ pub const KATAL: DerivedUnit = DerivedUnit {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::base;
-
-    #[test]
-    fn test_base_identities() {
-        assert_eq!(HERTZ_BASE, base::UNITLESS / base::SECOND);
-
-        assert_eq!(
-            NEWTON_BASE,
-            base::KILOGRAM * base::METER / (base::SECOND * base::SECOND)
-        );
-
-        assert_eq!(PASCAL_BASE, NEWTON_BASE / (base::METER * base::METER));
-
-        assert_eq!(JOULE_BASE, base::METER * NEWTON_BASE);
-        assert_eq!(JOULE_BASE, COULOMB_BASE * VOLT_BASE);
-        assert_eq!(JOULE_BASE, WATT_BASE * base::SECOND);
-
-        assert_eq!(WATT_BASE, JOULE_BASE / base::SECOND);
-        assert_eq!(WATT_BASE, VOLT_BASE * base::AMPERE);
-
-        assert_eq!(COULOMB_BASE, base::SECOND * base::AMPERE);
-        assert_eq!(COULOMB_BASE, FARAD_BASE * VOLT_BASE);
-
-        assert_eq!(VOLT_BASE, WATT_BASE / base::AMPERE);
-        assert_eq!(VOLT_BASE, JOULE_BASE / COULOMB_BASE);
-
-        assert_eq!(FARAD_BASE, COULOMB_BASE / VOLT_BASE);
-        assert_eq!(FARAD_BASE, base::SECOND / OHM_BASE);
-
-        assert_eq!(OHM_BASE, base::UNITLESS / SIEMENS_BASE);
-        assert_eq!(OHM_BASE, VOLT_BASE / base::AMPERE);
-
-        assert_eq!(SIEMENS_BASE, base::UNITLESS / OHM_BASE);
-        assert_eq!(SIEMENS_BASE, base::AMPERE / VOLT_BASE);
-
-        assert_eq!(WEBER_BASE, JOULE_BASE / base::AMPERE);
-        assert_eq!(WEBER_BASE, TESLA_BASE * base::METER * base::METER);
-        assert_eq!(WEBER_BASE, VOLT_BASE * base::SECOND);
-
-        assert_eq!(
-            TESLA_BASE,
-            VOLT_BASE * base::SECOND / (base::METER * base::METER)
-        );
-        assert_eq!(TESLA_BASE, WEBER_BASE / (base::METER * base::METER));
-        assert_eq!(TESLA_BASE, NEWTON_BASE / (base::AMPERE * base::METER));
-
-        assert_eq!(HENRY_BASE, VOLT_BASE * base::SECOND / base::AMPERE);
-        assert_eq!(HENRY_BASE, OHM_BASE * base::SECOND);
-        assert_eq!(HENRY_BASE, WEBER_BASE / base::AMPERE);
-
-        assert_eq!(LUX_BASE, base::CANDELA / (base::METER * base::METER));
-
-        assert_eq!(BECQUEREL_BASE, base::UNITLESS / base::SECOND);
-
-        assert_eq!(GRAY_BASE, JOULE_BASE / base::KILOGRAM);
-
-        assert_eq!(SIEVERT_BASE, JOULE_BASE / base::KILOGRAM);
-
-        assert_eq!(KATAL_BASE, base::MOLE / base::SECOND);
-    }
+    
 }

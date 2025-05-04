@@ -1,4 +1,4 @@
-use crate::{base, derived};
+use crate::{base, derived, identities::BASIC_IDENTITIES};
 
 impl From<base::BaseUnit> for derived::DerivedUnit {
     fn from(value: base::BaseUnit) -> Self {
@@ -22,24 +22,24 @@ impl From<derived::DerivedUnit> for base::BaseUnit {
     fn from(value: derived::DerivedUnit) -> Self {
         let mut output = value.base;
         let derived_units = [
-            (value.hertz, derived::HERTZ_BASE),
-            (value.newton, derived::NEWTON_BASE),
-            (value.pascal, derived::PASCAL_BASE),
-            (value.joule, derived::JOULE_BASE),
-            (value.watt, derived::WATT_BASE),
-            (value.coulomb, derived::COULOMB_BASE),
-            (value.volt, derived::VOLT_BASE),
-            (value.farad, derived::FARAD_BASE),
-            (value.ohm, derived::OHM_BASE),
-            (value.siemens, derived::SIEMENS_BASE),
-            (value.weber, derived::WEBER_BASE),
-            (value.tesla, derived::TESLA_BASE),
-            (value.henry, derived::HENRY_BASE),
-            (value.lux, derived::LUX_BASE),
-            (value.becquerel, derived::BECQUEREL_BASE),
-            (value.gray, derived::GRAY_BASE),
-            (value.sievert, derived::SIEVERT_BASE),
-            (value.katal, derived::KATAL_BASE),
+            (value.hertz, base::HERTZ),
+            (value.newton, base::NEWTON),
+            (value.pascal, base::PASCAL),
+            (value.joule, base::JOULE),
+            (value.watt, base::WATT),
+            (value.coulomb, base::COULOMB),
+            (value.volt, base::VOLT),
+            (value.farad, base::FARAD),
+            (value.ohm, base::OHM),
+            (value.siemens, base::SIEMENS),
+            (value.weber, base::WEBER),
+            (value.tesla, base::TESLA),
+            (value.henry, base::HENRY),
+            (value.lux, base::LUX),
+            (value.becquerel, base::BECQUEREL),
+            (value.gray, base::GRAY),
+            (value.sievert, base::SIEVERT),
+            (value.katal, base::KATAL),
         ];
         for (n, base) in derived_units {
             if n > 0 {
@@ -81,32 +81,7 @@ impl base::BaseUnit {
             ..derived::UNITLESS
         };
 
-        let identities = [
-            derived::JOULE_IDENTITY,
-            derived::NEWTON_IDENTITY,
-            derived::PASCAL_IDENTITY,
-            derived::WATT_IDENTITY,
-            // Ampere-derived
-            derived::COULOMB_IDENTITY,
-            derived::VOLT_IDENTITY,
-            derived::FARAD_IDENTITY,
-            derived::OHM_IDENTITY,
-            derived::SIEMENS_IDENTITY,
-            derived::WEBER_IDENTITY,
-            derived::HENRY_IDENTITY,
-            derived::TESLA_IDENTITY,
-            derived::HENRY_IDENTITY,
-            // Time-derived
-            derived::HERTZ_IDENTITY,
-            derived::BECQUEREL_IDENTITY, // Redundant
-            derived::SIEVERT_IDENTITY,
-            derived::GRAY_IDENTITY, // Redundant
-            // Candela-derive
-            derived::LUX_IDENTITY,
-            // mole-derived
-            derived::KATAL_IDENTITY,
-        ];
-        for identity in identities {
+        for identity in BASIC_IDENTITIES {
             let after_mul = output.multiply(identity);
             let after_div = output.divide(identity);
             if after_mul.magnitude() < output.magnitude() {
@@ -143,27 +118,28 @@ impl base::BaseUnit {
 
 impl derived::DerivedUnit {
     pub fn simplify(self) -> Self {
+        use crate::identities::*;
         let mut output = self;
 
         let derived_units = [
-            (self.newton, derived::NEWTON_IDENTITY),
-            (self.pascal, derived::PASCAL_IDENTITY),
-            (self.joule, derived::JOULE_IDENTITY),
-            (self.watt, derived::WATT_IDENTITY),
-            (self.coulomb, derived::COULOMB_IDENTITY),
-            (self.volt, derived::VOLT_IDENTITY),
-            (self.farad, derived::FARAD_IDENTITY),
-            (self.ohm, derived::OHM_IDENTITY),
-            (self.siemens, derived::SIEMENS_IDENTITY),
-            (self.weber, derived::WEBER_IDENTITY),
-            (self.tesla, derived::TESLA_IDENTITY),
-            (self.henry, derived::HENRY_IDENTITY),
-            (self.lux, derived::LUX_IDENTITY),
-            (self.becquerel, derived::BECQUEREL_IDENTITY),
-            (self.gray, derived::GRAY_IDENTITY),
-            (self.sievert, derived::SIEVERT_IDENTITY),
-            (self.katal, derived::KATAL_IDENTITY),
-            (self.hertz, derived::HENRY_IDENTITY),
+            (self.newton, NEWTON_IDENTITY),
+            (self.pascal, PASCAL_IDENTITY),
+            (self.joule, JOULE_IDENTITY),
+            (self.watt, WATT_IDENTITY),
+            (self.coulomb, COULOMB_IDENTITY),
+            (self.volt, VOLT_IDENTITY),
+            (self.farad, FARAD_IDENTITY),
+            (self.ohm, OHM_IDENTITY),
+            (self.siemens, SIEMENS_IDENTITY),
+            (self.weber, WEBER_IDENTITY),
+            (self.tesla, TESLA_IDENTITY),
+            (self.henry, HENRY_IDENTITY),
+            (self.lux, LUX_IDENTITY),
+            (self.becquerel, BECQUEREL_IDENTITY),
+            (self.gray, GRAY_IDENTITY),
+            (self.sievert, SIEVERT_IDENTITY),
+            (self.katal, KATAL_IDENTITY),
+            (self.hertz, HENRY_IDENTITY),
         ];
         for (n, base) in derived_units {
             if n > 0 {
@@ -186,24 +162,24 @@ mod tests {
 
     #[test]
     fn test_base_derived_conversions() {
-        assert_eq!(derived::HERTZ_BASE, derived::HERTZ.into());
-        assert_eq!(derived::NEWTON_BASE, derived::NEWTON.into());
-        assert_eq!(derived::PASCAL_BASE, derived::PASCAL.into());
-        assert_eq!(derived::JOULE_BASE, derived::JOULE.into());
-        assert_eq!(derived::WATT_BASE, derived::WATT.into());
-        assert_eq!(derived::COULOMB_BASE, derived::COULOMB.into());
-        assert_eq!(derived::VOLT_BASE, derived::VOLT.into());
-        assert_eq!(derived::FARAD_BASE, derived::FARAD.into());
-        assert_eq!(derived::OHM_BASE, derived::OHM.into());
-        assert_eq!(derived::SIEMENS_BASE, derived::SIEMENS.into());
-        assert_eq!(derived::WEBER_BASE, derived::WEBER.into());
-        assert_eq!(derived::TESLA_BASE, derived::TESLA.into());
-        assert_eq!(derived::HENRY_BASE, derived::HENRY.into());
-        assert_eq!(derived::LUX_BASE, derived::LUX.into());
-        assert_eq!(derived::BECQUEREL_BASE, derived::BECQUEREL.into());
-        assert_eq!(derived::GRAY_BASE, derived::GRAY.into());
-        assert_eq!(derived::SIEVERT_BASE, derived::SIEVERT.into());
-        assert_eq!(derived::KATAL_BASE, derived::KATAL.into());
+        assert_eq!(base::HERTZ, derived::HERTZ.into());
+        assert_eq!(base::NEWTON, derived::NEWTON.into());
+        assert_eq!(base::PASCAL, derived::PASCAL.into());
+        assert_eq!(base::JOULE, derived::JOULE.into());
+        assert_eq!(base::WATT, derived::WATT.into());
+        assert_eq!(base::COULOMB, derived::COULOMB.into());
+        assert_eq!(base::VOLT, derived::VOLT.into());
+        assert_eq!(base::FARAD, derived::FARAD.into());
+        assert_eq!(base::OHM, derived::OHM.into());
+        assert_eq!(base::SIEMENS, derived::SIEMENS.into());
+        assert_eq!(base::WEBER, derived::WEBER.into());
+        assert_eq!(base::TESLA, derived::TESLA.into());
+        assert_eq!(base::HENRY, derived::HENRY.into());
+        assert_eq!(base::LUX, derived::LUX.into());
+        assert_eq!(base::BECQUEREL, derived::BECQUEREL.into());
+        assert_eq!(base::GRAY, derived::GRAY.into());
+        assert_eq!(base::SIEVERT, derived::SIEVERT.into());
+        assert_eq!(base::KATAL, derived::KATAL.into());
     }
 
     #[test]
