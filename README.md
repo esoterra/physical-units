@@ -67,9 +67,8 @@ the redundancy allows us to distinguish between `"N"` and `"kg m / s²"`.
 
 Both `BaseValue` and `DerivedValue` support basic arithmetic including addition, subtraction, multiplication, and division.
 
-Addition and subtraction require the values to have the same units and if they are, not produces a `UnitMismatch` error.
-
-Multiplication and division don't require the values to have the same units and infers the correct units for the resulting value.
+* **Addition** and **subtraction** require the values to have the same units and if they are, not produces a `UnitMismatch` error.
+* **Multiplication** and **division** don't require the values to have the same units and infers the correct units for the resulting value.
 
 ## Comparison
 
