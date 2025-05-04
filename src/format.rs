@@ -366,7 +366,10 @@ mod tests {
             sievert: -2,
             ..derived::UNITLESS
         };
-        assert_eq!(String::from("DerivedUnit(farad⋅sievert⁻²)"), format!("{:?}", unit));
+        assert_eq!(
+            String::from("DerivedUnit(farad⋅sievert⁻²)"),
+            format!("{:?}", unit)
+        );
     }
 
     #[test]

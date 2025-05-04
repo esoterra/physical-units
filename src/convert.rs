@@ -56,7 +56,7 @@ impl<Number> From<base::BaseValue<Number>> for derived::DerivedValue<Number> {
 
 impl<Number> base::BaseValue<Number>
 where
-    Number: Copy
+    Number: Copy,
 {
     pub const fn to_derived(self) -> derived::DerivedValue<Number> {
         derived::DerivedValue {
@@ -152,24 +152,12 @@ mod tests {
         let base_joule =
             base::KILOGRAM * (base::METER * base::METER) / (base::SECOND * base::SECOND);
         let derived_joule = base_joule.to_derived().simplify();
-        assert_eq!(
-            derived::JOULE,
-            derived_joule,
-            "{} != {}",
-            derived::JOULE,
-            derived_joule
-        );
+        assert_eq!(derived::JOULE, derived_joule);
 
-        let base_joule =
-            base::KILOGRAM * (base::METER * base::METER * base::METER) / (base::SECOND * base::SECOND);
+        let base_joule = base::KILOGRAM * (base::METER * base::METER * base::METER)
+            / (base::SECOND * base::SECOND);
         let actual = base_joule.to_derived().simplify();
         let expected = derived::JOULE * derived::METER;
-        assert_eq!(
-            expected,
-            actual,
-            "{} != {}",
-            expected,
-            actual
-        );
+        assert_eq!(expected, actual);
     }
 }

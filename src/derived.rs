@@ -366,7 +366,6 @@ pub const HENRY: DerivedUnit = DerivedUnit {
 
 // TODO: lumen (lm)
 
-
 /// lux (lx)
 pub const LUX: DerivedUnit = DerivedUnit { lux: 1, ..UNITLESS };
 
@@ -402,10 +401,7 @@ mod tests {
     fn test_base_identities() {
         assert_eq!(HERTZ, UNITLESS / SECOND);
 
-        assert_eq!(
-            NEWTON,
-            KILOGRAM * METER / (SECOND * SECOND)
-        );
+        assert_eq!(NEWTON, KILOGRAM * METER / (SECOND * SECOND));
 
         assert_eq!(PASCAL, NEWTON / (METER * METER));
 
@@ -435,10 +431,7 @@ mod tests {
         assert_eq!(WEBER, TESLA * METER * METER);
         assert_eq!(WEBER, VOLT * SECOND);
 
-        assert_eq!(
-            TESLA,
-            VOLT * SECOND / (METER * METER)
-        );
+        assert_eq!(TESLA, VOLT * SECOND / (METER * METER));
         assert_eq!(TESLA, WEBER / (METER * METER));
         assert_eq!(TESLA, NEWTON / (AMPERE * METER));
 

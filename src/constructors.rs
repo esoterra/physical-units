@@ -346,11 +346,10 @@ impl<Number> derived::DerivedValue<Number> {
     }
 }
 
-
 impl<Number> base::BaseValue<Number>
 where
     Number: Mul<Output = Number>,
-    Number: From<u16>
+    Number: From<u16>,
 {
     pub fn minutes(number: Number) -> Self {
         Self {
@@ -367,11 +366,10 @@ where
     }
 }
 
-
 impl<Number> derived::DerivedValue<Number>
 where
     Number: Mul<Output = Number>,
-    Number: From<u16>
+    Number: From<u16>,
 {
     pub fn minutes(number: Number) -> Self {
         Self {
@@ -404,51 +402,150 @@ mod tests {
 
     #[test]
     fn test_time_derived_int() {
-        assert_eq!(derived::DerivedValue::seconds(60), derived::DerivedValue::minutes(1));
-        assert_eq!(derived::DerivedValue::seconds(120), derived::DerivedValue::minutes(2));
-        assert_eq!(derived::DerivedValue::seconds(180), derived::DerivedValue::minutes(3));
-        assert_eq!(derived::DerivedValue::seconds(240), derived::DerivedValue::minutes(4));
-        assert_eq!(derived::DerivedValue::seconds(300), derived::DerivedValue::minutes(5));
-        assert_eq!(derived::DerivedValue::seconds(360), derived::DerivedValue::minutes(6));
+        assert_eq!(
+            derived::DerivedValue::seconds(60),
+            derived::DerivedValue::minutes(1)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(120),
+            derived::DerivedValue::minutes(2)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(180),
+            derived::DerivedValue::minutes(3)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(240),
+            derived::DerivedValue::minutes(4)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(300),
+            derived::DerivedValue::minutes(5)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(360),
+            derived::DerivedValue::minutes(6)
+        );
     }
 
     #[test]
     fn test_time_base_float() {
         // floating point
-        assert_eq!(base::BaseValue::seconds(0f32), base::BaseValue::minutes(0f32));
-        assert_eq!(base::BaseValue::seconds(15f32), base::BaseValue::minutes(0.25f32));
-        assert_eq!(base::BaseValue::seconds(30f32), base::BaseValue::minutes(0.5f32));
-        assert_eq!(base::BaseValue::seconds(45f32), base::BaseValue::minutes(0.75f32));
-        assert_eq!(base::BaseValue::seconds(60f32), base::BaseValue::minutes(1f32));
-        assert_eq!(base::BaseValue::seconds(75f32), base::BaseValue::minutes(1.25f32));
-        assert_eq!(base::BaseValue::seconds(90f32), base::BaseValue::minutes(1.5f32));
+        assert_eq!(
+            base::BaseValue::seconds(0f32),
+            base::BaseValue::minutes(0f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(15f32),
+            base::BaseValue::minutes(0.25f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(30f32),
+            base::BaseValue::minutes(0.5f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(45f32),
+            base::BaseValue::minutes(0.75f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(60f32),
+            base::BaseValue::minutes(1f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(75f32),
+            base::BaseValue::minutes(1.25f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(90f32),
+            base::BaseValue::minutes(1.5f32)
+        );
 
         assert_eq!(base::BaseValue::seconds(0f32), base::BaseValue::hours(0f32));
-        assert_eq!(base::BaseValue::seconds(900f32), base::BaseValue::hours(0.25f32));
-        assert_eq!(base::BaseValue::seconds(1800f32), base::BaseValue::hours(0.5f32));
-        assert_eq!(base::BaseValue::seconds(2700f32), base::BaseValue::hours(0.75f32));
-        assert_eq!(base::BaseValue::seconds(3600f32), base::BaseValue::hours(1f32));
-        assert_eq!(base::BaseValue::seconds(4500f32), base::BaseValue::hours(1.25f32));
-        assert_eq!(base::BaseValue::seconds(5400f32), base::BaseValue::hours(1.5f32));
+        assert_eq!(
+            base::BaseValue::seconds(900f32),
+            base::BaseValue::hours(0.25f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(1800f32),
+            base::BaseValue::hours(0.5f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(2700f32),
+            base::BaseValue::hours(0.75f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(3600f32),
+            base::BaseValue::hours(1f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(4500f32),
+            base::BaseValue::hours(1.25f32)
+        );
+        assert_eq!(
+            base::BaseValue::seconds(5400f32),
+            base::BaseValue::hours(1.5f32)
+        );
     }
 
     #[test]
     fn test_time_derived_float() {
         // floating point
-        assert_eq!(derived::DerivedValue::seconds(0f32), derived::DerivedValue::minutes(0f32));
-        assert_eq!(derived::DerivedValue::seconds(15f32), derived::DerivedValue::minutes(0.25f32));
-        assert_eq!(derived::DerivedValue::seconds(30f32), derived::DerivedValue::minutes(0.5f32));
-        assert_eq!(derived::DerivedValue::seconds(45f32), derived::DerivedValue::minutes(0.75f32));
-        assert_eq!(derived::DerivedValue::seconds(60f32), derived::DerivedValue::minutes(1f32));
-        assert_eq!(derived::DerivedValue::seconds(75f32), derived::DerivedValue::minutes(1.25f32));
-        assert_eq!(derived::DerivedValue::seconds(90f32), derived::DerivedValue::minutes(1.5f32));
+        assert_eq!(
+            derived::DerivedValue::seconds(0f32),
+            derived::DerivedValue::minutes(0f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(15f32),
+            derived::DerivedValue::minutes(0.25f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(30f32),
+            derived::DerivedValue::minutes(0.5f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(45f32),
+            derived::DerivedValue::minutes(0.75f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(60f32),
+            derived::DerivedValue::minutes(1f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(75f32),
+            derived::DerivedValue::minutes(1.25f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(90f32),
+            derived::DerivedValue::minutes(1.5f32)
+        );
 
-        assert_eq!(derived::DerivedValue::seconds(0f32), derived::DerivedValue::hours(0f32));
-        assert_eq!(derived::DerivedValue::seconds(900f32), derived::DerivedValue::hours(0.25f32));
-        assert_eq!(derived::DerivedValue::seconds(1800f32), derived::DerivedValue::hours(0.5f32));
-        assert_eq!(derived::DerivedValue::seconds(2700f32), derived::DerivedValue::hours(0.75f32));
-        assert_eq!(derived::DerivedValue::seconds(3600f32), derived::DerivedValue::hours(1f32));
-        assert_eq!(derived::DerivedValue::seconds(4500f32), derived::DerivedValue::hours(1.25f32));
-        assert_eq!(derived::DerivedValue::seconds(5400f32), derived::DerivedValue::hours(1.5f32));
+        assert_eq!(
+            derived::DerivedValue::seconds(0f32),
+            derived::DerivedValue::hours(0f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(900f32),
+            derived::DerivedValue::hours(0.25f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(1800f32),
+            derived::DerivedValue::hours(0.5f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(2700f32),
+            derived::DerivedValue::hours(0.75f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(3600f32),
+            derived::DerivedValue::hours(1f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(4500f32),
+            derived::DerivedValue::hours(1.25f32)
+        );
+        assert_eq!(
+            derived::DerivedValue::seconds(5400f32),
+            derived::DerivedValue::hours(1.5f32)
+        );
     }
 }
