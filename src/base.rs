@@ -45,6 +45,18 @@ impl BaseUnit {
         }
     }
 
+    pub const fn pow(self, power: i8) -> Self {
+        Self {
+            kilogram: self.kilogram * power,
+            meter: self.meter * power,
+            second: self.second * power,
+            mole: self.mole * power,
+            ampere: self.ampere * power,
+            kelvin: self.kelvin * power,
+            candela: self.candela * power,
+        }
+    }
+
     pub(crate) fn magnitude(self) -> u16 {
         self.meter.abs() as u16
             + self.second.abs() as u16

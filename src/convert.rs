@@ -22,40 +22,26 @@ impl From<derived::DerivedUnit> for base::BaseUnit {
 }
 
 impl derived::DerivedUnit {
-    pub fn to_base(self) -> base::BaseUnit {
-        let mut output = self.base;
-        let derived_units = [
-            (self.hertz, base::HERTZ),
-            (self.newton, base::NEWTON),
-            (self.pascal, base::PASCAL),
-            (self.joule, base::JOULE),
-            (self.watt, base::WATT),
-            (self.coulomb, base::COULOMB),
-            (self.volt, base::VOLT),
-            (self.farad, base::FARAD),
-            (self.ohm, base::OHM),
-            (self.siemens, base::SIEMENS),
-            (self.weber, base::WEBER),
-            (self.tesla, base::TESLA),
-            (self.henry, base::HENRY),
-            (self.lux, base::LUX),
-            (self.becquerel, base::BECQUEREL),
-            (self.gray, base::GRAY),
-            (self.sievert, base::SIEVERT),
-            (self.katal, base::KATAL),
-        ];
-        for (n, base) in derived_units {
-            if n > 0 {
-                for _ in 0..n {
-                    output = output.multiply(base);
-                }
-            } else {
-                for _ in 0..-n {
-                    output = output.divide(base);
-                }
-            }
-        }
-        output
+    pub const fn to_base(self) -> base::BaseUnit {
+        self.base
+            .multiply(base::HERTZ.pow(self.hertz))
+            .multiply(base::NEWTON.pow(self.newton))
+            .multiply(base::PASCAL.pow(self.pascal))
+            .multiply(base::JOULE.pow(self.joule))
+            .multiply(base::WATT.pow(self.watt))
+            .multiply(base::COULOMB.pow(self.coulomb))
+            .multiply(base::VOLT.pow(self.volt))
+            .multiply(base::FARAD.pow(self.farad))
+            .multiply(base::OHM.pow(self.ohm))
+            .multiply(base::SIEMENS.pow(self.siemens))
+            .multiply(base::WEBER.pow(self.weber))
+            .multiply(base::TESLA.pow(self.tesla))
+            .multiply(base::HENRY.pow(self.henry))
+            .multiply(base::LUX.pow(self.lux))
+            .multiply(base::BECQUEREL.pow(self.becquerel))
+            .multiply(base::GRAY.pow(self.gray))
+            .multiply(base::SIEVERT.pow(self.sievert))
+            .multiply(base::KATAL.pow(self.katal))
     }
 }
 
