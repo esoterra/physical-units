@@ -16,7 +16,7 @@ Any SI unit can be represented as the powers of the seven SI base units that mul
 | kelvin | K | temperature |
 | candela | cd | luminosity |
 
-For example, 1 newton (1 N) is equal to one kilogram meter per second squared (1 kg m / s²),
+For example, 1 newton (1 N) is equal to one kilogram meter per second squared (1 kg⋅m / s²),
 which can be represented a `(1, 1, -2, 0, 0, 0, 0)` where each value corresponds to the exponent
 of an SI base unit. This is how the `BaseUnit` type represents units.
 
@@ -96,8 +96,8 @@ All of the unit types have a basic derived `Debug` implementation
 and a pretty-printed `Display` implementation.
 
 The `Display` implementation operates at the level of abstraction of the unit type it's for.
-* `BaseUnit` - `"kg m / s²"`
-* `DerivedUnit` - `"N"` OR `"kg m / s²"` (depends on whether `simplify()` was used)
+* `BaseUnit` - `"kg⋅m⋅/ s²"`
+* `DerivedUnit` - `"N"` OR `"kg⋅m⋅/ s²"` (depending on how it was constructed)
 
 ## Parsing
 
