@@ -27,7 +27,7 @@ pub struct DerivedUnit {
     pub(crate) farad: i8,
     /// ohm (Ω)
     pub(crate) ohm: i8,
-    /// siemens
+    /// siemens (S)
     pub(crate) siemens: i8,
     /// weber (Wb)
     pub(crate) weber: i8,
