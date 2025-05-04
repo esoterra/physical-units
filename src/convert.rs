@@ -47,12 +47,18 @@ impl derived::DerivedUnit {
 
 impl<Number> From<base::BaseValue<Number>> for derived::DerivedValue<Number> {
     fn from(value: base::BaseValue<Number>) -> Self {
-        value.to_derived()
+        derived::DerivedValue {
+            unit: value.unit.to_derived(),
+            number: value.number,
+        }
     }
 }
 
-impl<Number> base::BaseValue<Number> {
-    pub fn to_derived(self) -> derived::DerivedValue<Number> {
+impl<Number> base::BaseValue<Number>
+where
+    Number: Copy
+{
+    pub const fn to_derived(self) -> derived::DerivedValue<Number> {
         derived::DerivedValue {
             unit: self.unit.to_derived(),
             number: self.number,
