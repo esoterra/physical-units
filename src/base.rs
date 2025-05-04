@@ -408,7 +408,7 @@ mod tests {
     }
 
     #[test]
-    fn test_base_identities() {
+    fn test_identities() {
         assert_eq!(HERTZ, UNITLESS / SECOND);
 
         assert_eq!(

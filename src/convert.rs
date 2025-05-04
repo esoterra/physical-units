@@ -2,10 +2,7 @@ use crate::{base, derived, identities::BASIC_IDENTITIES};
 
 impl From<base::BaseUnit> for derived::DerivedUnit {
     fn from(value: base::BaseUnit) -> Self {
-        derived::DerivedUnit {
-            base: value,
-            ..derived::UNITLESS
-        }
+        value.to_derived()
     }
 }
 
@@ -20,26 +17,32 @@ impl base::BaseUnit {
 
 impl From<derived::DerivedUnit> for base::BaseUnit {
     fn from(value: derived::DerivedUnit) -> Self {
-        let mut output = value.base;
+        value.to_base()
+    }
+}
+
+impl derived::DerivedUnit {
+    pub fn to_base(self) -> base::BaseUnit {
+        let mut output = self.base;
         let derived_units = [
-            (value.hertz, base::HERTZ),
-            (value.newton, base::NEWTON),
-            (value.pascal, base::PASCAL),
-            (value.joule, base::JOULE),
-            (value.watt, base::WATT),
-            (value.coulomb, base::COULOMB),
-            (value.volt, base::VOLT),
-            (value.farad, base::FARAD),
-            (value.ohm, base::OHM),
-            (value.siemens, base::SIEMENS),
-            (value.weber, base::WEBER),
-            (value.tesla, base::TESLA),
-            (value.henry, base::HENRY),
-            (value.lux, base::LUX),
-            (value.becquerel, base::BECQUEREL),
-            (value.gray, base::GRAY),
-            (value.sievert, base::SIEVERT),
-            (value.katal, base::KATAL),
+            (self.hertz, base::HERTZ),
+            (self.newton, base::NEWTON),
+            (self.pascal, base::PASCAL),
+            (self.joule, base::JOULE),
+            (self.watt, base::WATT),
+            (self.coulomb, base::COULOMB),
+            (self.volt, base::VOLT),
+            (self.farad, base::FARAD),
+            (self.ohm, base::OHM),
+            (self.siemens, base::SIEMENS),
+            (self.weber, base::WEBER),
+            (self.tesla, base::TESLA),
+            (self.henry, base::HENRY),
+            (self.lux, base::LUX),
+            (self.becquerel, base::BECQUEREL),
+            (self.gray, base::GRAY),
+            (self.sievert, base::SIEVERT),
+            (self.katal, base::KATAL),
         ];
         for (n, base) in derived_units {
             if n > 0 {
@@ -58,28 +61,37 @@ impl From<derived::DerivedUnit> for base::BaseUnit {
 
 impl<Number> From<base::BaseValue<Number>> for derived::DerivedValue<Number> {
     fn from(value: base::BaseValue<Number>) -> Self {
-        Self {
-            unit: value.unit.into(),
-            number: value.number,
+        value.to_derived()
+    }
+}
+
+impl<Number> base::BaseValue<Number> {
+    pub fn to_derived(self) -> derived::DerivedValue<Number> {
+        derived::DerivedValue {
+            unit: self.unit.to_derived(),
+            number: self.number,
         }
     }
 }
 
 impl<Number> From<derived::DerivedValue<Number>> for base::BaseValue<Number> {
     fn from(value: derived::DerivedValue<Number>) -> Self {
-        Self {
-            unit: value.unit.into(),
-            number: value.number,
+        value.to_base()
+    }
+}
+
+impl<Number> derived::DerivedValue<Number> {
+    pub fn to_base(self) -> base::BaseValue<Number> {
+        base::BaseValue {
+            unit: self.unit.to_base(),
+            number: self.number,
         }
     }
 }
 
-impl base::BaseUnit {
-    pub fn derive(self) -> derived::DerivedUnit {
-        let mut output = derived::DerivedUnit {
-            base: self,
-            ..derived::UNITLESS
-        };
+impl derived::DerivedUnit {
+    pub fn simplify(self) -> Self {
+        let mut output = self;
 
         for identity in BASIC_IDENTITIES {
             let after_mul = output.multiply(identity);
@@ -112,46 +124,7 @@ impl base::BaseUnit {
                 output = after_div;
             }
         }
-        output
-    }
-}
 
-impl derived::DerivedUnit {
-    pub fn simplify(self) -> Self {
-        use crate::identities::*;
-        let mut output = self;
-
-        let derived_units = [
-            (self.newton, NEWTON_IDENTITY),
-            (self.pascal, PASCAL_IDENTITY),
-            (self.joule, JOULE_IDENTITY),
-            (self.watt, WATT_IDENTITY),
-            (self.coulomb, COULOMB_IDENTITY),
-            (self.volt, VOLT_IDENTITY),
-            (self.farad, FARAD_IDENTITY),
-            (self.ohm, OHM_IDENTITY),
-            (self.siemens, SIEMENS_IDENTITY),
-            (self.weber, WEBER_IDENTITY),
-            (self.tesla, TESLA_IDENTITY),
-            (self.henry, HENRY_IDENTITY),
-            (self.lux, LUX_IDENTITY),
-            (self.becquerel, BECQUEREL_IDENTITY),
-            (self.gray, GRAY_IDENTITY),
-            (self.sievert, SIEVERT_IDENTITY),
-            (self.katal, KATAL_IDENTITY),
-            (self.hertz, HENRY_IDENTITY),
-        ];
-        for (n, base) in derived_units {
-            if n > 0 {
-                for _ in 0..n {
-                    output = output.multiply(base);
-                }
-            } else {
-                for _ in 0..-n {
-                    output = output.divide(base);
-                }
-            }
-        }
         output
     }
 }
@@ -186,7 +159,7 @@ mod tests {
     fn test_derive() {
         let base_joule =
             base::KILOGRAM * (base::METER * base::METER) / (base::SECOND * base::SECOND);
-        let derived_joule = base_joule.derive();
+        let derived_joule = base_joule.to_derived().simplify();
         assert_eq!(
             derived::JOULE,
             derived_joule,
@@ -197,7 +170,7 @@ mod tests {
 
         let base_joule =
             base::KILOGRAM * (base::METER * base::METER * base::METER) / (base::SECOND * base::SECOND);
-        let actual = base_joule.derive();
+        let actual = base_joule.to_derived().simplify();
         let expected = derived::JOULE * derived::METER;
         assert_eq!(
             expected,

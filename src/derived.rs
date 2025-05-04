@@ -4,7 +4,7 @@ use thiserror::Error;
 
 use crate::base::{self, BaseUnit};
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct DerivedUnit {
     /// remaining base units
     pub(crate) base: BaseUnit,
@@ -47,6 +47,13 @@ pub struct DerivedUnit {
     pub(crate) katal: i8,
 }
 
+impl PartialEq for DerivedUnit {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_base() == other.to_base()
+    }
+}
+impl Eq for DerivedUnit {}
+
 impl DerivedUnit {
     pub const fn multiply(self, other: Self) -> Self {
         Self {
@@ -74,7 +81,7 @@ impl DerivedUnit {
 
     pub const fn divide(self, other: Self) -> Self {
         Self {
-            base: self.base.multiply(other.base),
+            base: self.base.divide(other.base),
             hertz: self.hertz - other.hertz,
             newton: self.newton - other.newton,
             pascal: self.pascal - other.pascal,
@@ -389,5 +396,64 @@ pub const KATAL: DerivedUnit = DerivedUnit {
 
 #[cfg(test)]
 mod tests {
-    
+    use super::*;
+
+    #[test]
+    fn test_base_identities() {
+        assert_eq!(HERTZ, UNITLESS / SECOND);
+
+        assert_eq!(
+            NEWTON,
+            KILOGRAM * METER / (SECOND * SECOND)
+        );
+
+        assert_eq!(PASCAL, NEWTON / (METER * METER));
+
+        assert_eq!(JOULE, METER * NEWTON);
+        assert_eq!(JOULE, COULOMB * VOLT);
+        assert_eq!(JOULE, WATT * SECOND);
+
+        assert_eq!(WATT, JOULE / SECOND);
+        assert_eq!(WATT, VOLT * AMPERE);
+
+        assert_eq!(COULOMB, SECOND * AMPERE);
+        assert_eq!(COULOMB, FARAD * VOLT);
+
+        assert_eq!(VOLT, WATT / AMPERE);
+        assert_eq!(VOLT, JOULE / COULOMB);
+
+        assert_eq!(FARAD, COULOMB / VOLT);
+        assert_eq!(FARAD, SECOND / OHM);
+
+        assert_eq!(OHM, UNITLESS / SIEMENS);
+        assert_eq!(OHM, VOLT / AMPERE);
+
+        assert_eq!(SIEMENS, UNITLESS / OHM);
+        assert_eq!(SIEMENS, AMPERE / VOLT);
+
+        assert_eq!(WEBER, JOULE / AMPERE);
+        assert_eq!(WEBER, TESLA * METER * METER);
+        assert_eq!(WEBER, VOLT * SECOND);
+
+        assert_eq!(
+            TESLA,
+            VOLT * SECOND / (METER * METER)
+        );
+        assert_eq!(TESLA, WEBER / (METER * METER));
+        assert_eq!(TESLA, NEWTON / (AMPERE * METER));
+
+        assert_eq!(HENRY, VOLT * SECOND / AMPERE);
+        assert_eq!(HENRY, OHM * SECOND);
+        assert_eq!(HENRY, WEBER / AMPERE);
+
+        assert_eq!(LUX, CANDELA / (METER * METER));
+
+        assert_eq!(BECQUEREL, UNITLESS / SECOND);
+
+        assert_eq!(GRAY, JOULE / KILOGRAM);
+
+        assert_eq!(SIEVERT, JOULE / KILOGRAM);
+
+        assert_eq!(KATAL, MOLE / SECOND);
+    }
 }
