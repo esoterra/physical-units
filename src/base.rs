@@ -1,27 +1,43 @@
-use std::ops::{Add, Div, Mul, Sub};
+use core::fmt;
+use std::ops::{Add, Div, Mul, Neg, Sub};
 
 use thiserror::Error;
 
-#[derive(Default, Clone, Copy, PartialEq, Eq)]
-pub struct BaseUnit {
+use crate::exponents::UnitExponent;
+
+#[derive(Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct BaseUnit<ExponentType = i8> {
     /// kilogram (kg)
-    pub(crate) kilogram: i8,
+    pub(crate) kilogram: ExponentType,
     /// meter (m)
-    pub(crate) meter: i8,
+    pub(crate) meter: ExponentType,
     /// second (s)
-    pub(crate) second: i8,
+    pub(crate) second: ExponentType,
     /// mole (mol)
-    pub(crate) mole: i8,
+    pub(crate) mole: ExponentType,
     /// ampere (A)
-    pub(crate) ampere: i8,
+    pub(crate) ampere: ExponentType,
     /// kelvin (K)
-    pub(crate) kelvin: i8,
+    pub(crate) kelvin: ExponentType,
     /// candela (cd)
-    pub(crate) candela: i8,
+    pub(crate) candela: ExponentType,
 }
 
-impl BaseUnit {
-    pub const fn multiply(self, other: Self) -> Self {
+impl<ExponentType: UnitExponent> BaseUnit<ExponentType> {
+    pub fn unitless() -> Self {
+        let zero = ExponentType::from_int(0);
+        Self {
+            kilogram: zero,
+            meter: zero,
+            second: zero,
+            mole: zero,
+            ampere: zero,
+            kelvin: zero,
+            candela: zero,
+        }
+    }
+
+    pub fn multiply(self, other: Self) -> Self {
         Self {
             meter: self.meter + other.meter,
             second: self.second + other.second,
@@ -33,7 +49,7 @@ impl BaseUnit {
         }
     }
 
-    pub const fn divide(self, other: Self) -> Self {
+    pub fn divide(self, other: Self) -> Self {
         Self {
             meter: self.meter - other.meter,
             second: self.second - other.second,
@@ -45,7 +61,7 @@ impl BaseUnit {
         }
     }
 
-    pub const fn pow(self, power: i8) -> Self {
+    pub fn pow(self, power: i8) -> Self {
         Self {
             kilogram: self.kilogram * power,
             meter: self.meter * power,
@@ -57,51 +73,136 @@ impl BaseUnit {
         }
     }
 
+    pub fn root(self, root: i8) -> Self {
+        Self {
+            kilogram: self.kilogram / root,
+            meter: self.meter / root,
+            second: self.second / root,
+            mole: self.mole / root,
+            ampere: self.ampere / root,
+            kelvin: self.kelvin / root,
+            candela: self.candela / root,
+        }
+    }
+
     pub(crate) fn magnitude(self) -> u16 {
-        self.meter.abs() as u16
-            + self.second.abs() as u16
-            + self.mole.abs() as u16
-            + self.ampere.abs() as u16
-            + self.kelvin.abs() as u16
-            + self.candela.abs() as u16
-            + self.kilogram.abs() as u16
+        self.meter.magnitude()
+            + self.second.magnitude()
+            + self.mole.magnitude()
+            + self.ampere.magnitude()
+            + self.kelvin.magnitude()
+            + self.candela.magnitude()
+            + self.kilogram.magnitude()
     }
 }
 
-impl Mul for BaseUnit {
-    type Output = BaseUnit;
+// We only allow fractional exponents to be multiplied by integers
+// to keep things simple, so while raising a unit by an arbitrary exponent
+// type isn't generally allowed, it is allowed if the Self type uses integers.
+// 
+// Note: this mostly exists because it's useful in converting derived units
+// where we are multiplying the number of some unit in the identity
+// (e.g. 1 Second in the Couloumb identity) by the exponent associated with
+// that derived unit.
+impl BaseUnit<i8> {
+    pub fn int_pow<ExponentType>(self, other: ExponentType) -> BaseUnit<ExponentType>
+    where
+        ExponentType: UnitExponent,
+    {
+        BaseUnit {
+            kilogram: other * self.kilogram,
+            meter: other * self.meter,
+            second: other * self.second,
+            mole: other * self.mole,
+            ampere: other * self.ampere,
+            kelvin: other * self.kelvin,
+            candela: other * self.candela,
+        }
+    }
+}
+
+impl<ExponentType: UnitExponent> Mul for BaseUnit<ExponentType> {
+    type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
         self.multiply(rhs)
     }
 }
 
-impl Div for BaseUnit {
-    type Output = BaseUnit;
+impl<ExponentType: UnitExponent> Div for BaseUnit<ExponentType> {
+    type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.divide(rhs)
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct BaseValue<Number> {
-    pub(crate) unit: BaseUnit,
+#[derive(Clone, Copy)]
+pub struct BaseValue<Number, ExponentType = i8> {
+    pub(crate) unit: BaseUnit<ExponentType>,
     pub(crate) number: Number,
 }
 
 #[derive(Error, Debug)]
 #[error("Unit '{lhs}' didn't match '{rhs}'")]
-pub struct UnitMismatch {
-    pub lhs: BaseUnit,
-    pub rhs: BaseUnit,
+pub struct UnitMismatch<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    pub lhs: BaseUnit<ExponentType>,
+    pub rhs: BaseUnit<ExponentType>,
 }
 
-impl<Number> Add for BaseValue<Number>
+impl<ExponentType, Number> PartialEq for BaseValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
+    Number: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.unit == other.unit && self.number == other.number
+    }
+}
+
+impl<ExponentType, Number> Eq for BaseValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: PartialEq,
+{
+}
+
+impl<ExponentType, Number> fmt::Debug for BaseValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: fmt::Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BaseValue")
+            .field("unit", &self.unit)
+            .field("number", &self.number)
+            .finish()
+    }
+}
+
+impl<ExponentType, Number> Neg for BaseValue<Number, ExponentType>
+where
+    Number: Neg<Output = Number>,
+{
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self {
+            unit: self.unit,
+            number: -self.number,
+        }
+    }
+}
+
+impl<ExponentType, Number> Add for BaseValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
     Number: Add<Output = Number>,
 {
-    type Output = Result<Self, UnitMismatch>;
+    type Output = Result<Self, UnitMismatch<ExponentType>>;
 
     fn add(self, rhs: Self) -> Self::Output {
         if self.unit == rhs.unit {
@@ -118,11 +219,12 @@ where
     }
 }
 
-impl<Number> Sub for BaseValue<Number>
+impl<ExponentType, Number> Sub for BaseValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Sub<Output = Number>,
 {
-    type Output = Result<Self, UnitMismatch>;
+    type Output = Result<Self, UnitMismatch<ExponentType>>;
 
     fn sub(self, rhs: Self) -> Self::Output {
         if self.unit == rhs.unit {
@@ -139,8 +241,9 @@ where
     }
 }
 
-impl<Number> Mul for BaseValue<Number>
+impl<ExponentType, Number> Mul for BaseValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Mul<Output = Number>,
 {
     type Output = Self;
@@ -153,8 +256,9 @@ where
     }
 }
 
-impl<Number> Div for BaseValue<Number>
+impl<ExponentType, Number> Div for BaseValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Div<Output = Number>,
 {
     type Output = Self;

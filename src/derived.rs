@@ -1,61 +1,97 @@
+use core::fmt;
 use std::ops::{Add, Div, Mul, Sub};
 
 use thiserror::Error;
 
-use crate::base::{self, BaseUnit};
+use crate::{
+    base::{self, BaseUnit},
+    exponents::UnitExponent,
+};
 
 #[derive(Default, Clone, Copy)]
-pub struct DerivedUnit {
+pub struct DerivedUnit<ExponentType = i8> {
     /// remaining base units
-    pub(crate) base: BaseUnit,
+    pub(crate) base: BaseUnit<ExponentType>,
 
     /// hertz (Hz)
-    pub(crate) hertz: i8,
+    pub(crate) hertz: ExponentType,
     /// newton (N)
-    pub(crate) newton: i8,
+    pub(crate) newton: ExponentType,
     /// pascal (Pa)
-    pub(crate) pascal: i8,
+    pub(crate) pascal: ExponentType,
     /// joule (J)
-    pub(crate) joule: i8,
+    pub(crate) joule: ExponentType,
     /// watt (W)
-    pub(crate) watt: i8,
+    pub(crate) watt: ExponentType,
     /// coulomb (C)
-    pub(crate) coulomb: i8,
+    pub(crate) coulomb: ExponentType,
     /// volt (V)
-    pub(crate) volt: i8,
+    pub(crate) volt: ExponentType,
     /// farad (F)
-    pub(crate) farad: i8,
+    pub(crate) farad: ExponentType,
     /// ohm (Ω)
-    pub(crate) ohm: i8,
+    pub(crate) ohm: ExponentType,
     /// siemens (S)
-    pub(crate) siemens: i8,
+    pub(crate) siemens: ExponentType,
     /// weber (Wb)
-    pub(crate) weber: i8,
+    pub(crate) weber: ExponentType,
     /// tesla (T)
-    pub(crate) tesla: i8,
+    pub(crate) tesla: ExponentType,
     /// henry (H)
-    pub(crate) henry: i8,
+    pub(crate) henry: ExponentType,
     /// lux (lx)
-    pub(crate) lux: i8,
+    pub(crate) lux: ExponentType,
     /// becquerel (Bq)
-    pub(crate) becquerel: i8,
+    pub(crate) becquerel: ExponentType,
     /// gray (Gy)
-    pub(crate) gray: i8,
+    pub(crate) gray: ExponentType,
     /// sievert (Sv)
-    pub(crate) sievert: i8,
+    pub(crate) sievert: ExponentType,
     /// katal (kat)
-    pub(crate) katal: i8,
+    pub(crate) katal: ExponentType,
 }
 
-impl PartialEq for DerivedUnit {
+impl<ExponentType> PartialEq for DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
     fn eq(&self, other: &Self) -> bool {
         self.to_base() == other.to_base()
     }
 }
-impl Eq for DerivedUnit {}
 
-impl DerivedUnit {
-    pub const fn multiply(self, other: Self) -> Self {
+impl<ExponentType> Eq for DerivedUnit<ExponentType> where ExponentType: UnitExponent {}
+
+impl<ExponentType> DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    pub fn unitless() -> Self {
+        let zero = ExponentType::ZERO;
+        Self {
+            base: BaseUnit::unitless(),
+            hertz: zero,
+            newton: zero,
+            pascal: zero,
+            joule: zero,
+            watt: zero,
+            coulomb: zero,
+            volt: zero,
+            farad: zero,
+            ohm: zero,
+            siemens: zero,
+            weber: zero,
+            tesla: zero,
+            henry: zero,
+            lux: zero,
+            becquerel: zero,
+            gray: zero,
+            sievert: zero,
+            katal: zero,
+        }
+    }
+
+    pub fn multiply(self, other: Self) -> Self {
         Self {
             base: self.base.multiply(other.base),
             hertz: self.hertz + other.hertz,
@@ -79,7 +115,7 @@ impl DerivedUnit {
         }
     }
 
-    pub const fn divide(self, other: Self) -> Self {
+    pub fn divide(self, other: Self) -> Self {
         Self {
             base: self.base.divide(other.base),
             hertz: self.hertz - other.hertz,
@@ -103,63 +139,170 @@ impl DerivedUnit {
         }
     }
 
+    pub fn pow(self, power: i8) -> Self {
+        Self {
+            base: self.base.pow(power),
+            hertz: self.hertz * power,
+            newton: self.newton * power,
+            pascal: self.pascal * power,
+            joule: self.joule * power,
+            watt: self.watt * power,
+            coulomb: self.coulomb * power,
+            volt: self.volt * power,
+            farad: self.farad * power,
+            ohm: self.ohm * power,
+            siemens: self.siemens * power,
+            weber: self.weber * power,
+            tesla: self.tesla * power,
+            henry: self.henry * power,
+            lux: self.lux * power,
+            becquerel: self.becquerel * power,
+            gray: self.gray * power,
+            sievert: self.sievert * power,
+            katal: self.katal * power,
+        }
+    }
+
+    pub fn root(self, root: i8) -> Self {
+        Self {
+            base: self.base.root(root),
+            hertz: self.hertz / root,
+            newton: self.newton / root,
+            pascal: self.pascal / root,
+            joule: self.joule / root,
+            watt: self.watt / root,
+            coulomb: self.coulomb / root,
+            volt: self.volt / root,
+            farad: self.farad / root,
+            ohm: self.ohm / root,
+            siemens: self.siemens / root,
+            weber: self.weber / root,
+            tesla: self.tesla / root,
+            henry: self.henry / root,
+            lux: self.lux / root,
+            becquerel: self.becquerel / root,
+            gray: self.gray / root,
+            sievert: self.sievert / root,
+            katal: self.katal / root,
+        }
+    }
+
     pub(crate) fn magnitude(self) -> u16 {
         self.base.magnitude()
-            + self.hertz.abs() as u16
-            + self.newton.abs() as u16
-            + self.pascal.abs() as u16
-            + self.joule.abs() as u16
-            + self.watt.abs() as u16
-            + self.coulomb.abs() as u16
-            + self.volt.abs() as u16
-            + self.farad.abs() as u16
-            + self.ohm.abs() as u16
-            + self.siemens.abs() as u16
-            + self.weber.abs() as u16
-            + self.tesla.abs() as u16
-            + self.henry.abs() as u16
-            + self.lux.abs() as u16
-            + self.becquerel.abs() as u16
-            + self.gray.abs() as u16
-            + self.sievert.abs() as u16
-            + self.katal.abs() as u16
+            + self.hertz.magnitude()
+            + self.newton.magnitude()
+            + self.pascal.magnitude()
+            + self.joule.magnitude()
+            + self.watt.magnitude()
+            + self.coulomb.magnitude()
+            + self.volt.magnitude()
+            + self.farad.magnitude()
+            + self.ohm.magnitude()
+            + self.siemens.magnitude()
+            + self.weber.magnitude()
+            + self.tesla.magnitude()
+            + self.henry.magnitude()
+            + self.lux.magnitude()
+            + self.becquerel.magnitude()
+            + self.gray.magnitude()
+            + self.sievert.magnitude()
+            + self.katal.magnitude()
     }
 }
 
-impl Mul for DerivedUnit {
-    type Output = DerivedUnit;
+impl<ExponentType> Mul for DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
         self.multiply(rhs)
     }
 }
 
-impl Div for DerivedUnit {
-    type Output = DerivedUnit;
+impl<ExponentType> Div for DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.divide(rhs)
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct DerivedValue<Number> {
-    pub(crate) unit: DerivedUnit,
+#[derive(Clone, Copy)]
+pub struct DerivedValue<Number, ExponentType = i8> {
+    pub(crate) unit: DerivedUnit<ExponentType>,
     pub(crate) number: Number,
 }
 
-#[derive(Error, Debug)]
+#[derive(Error)]
 #[error("Unit '{lhs}' didn't match '{rhs}'")]
-pub struct UnitMismatch {
-    pub lhs: DerivedUnit,
-    pub rhs: DerivedUnit,
+pub struct UnitMismatch<ExponentType> {
+    pub lhs: DerivedUnit<ExponentType>,
+    pub rhs: DerivedUnit<ExponentType>,
 }
 
-impl<Number> Add for DerivedValue<Number>
+impl<Number, ExponentType> PartialEq for DerivedValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
+    Number: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.unit == other.unit && self.number == other.number
+    }
+}
+
+impl<Number, ExponentType> Eq for DerivedValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: Eq,
+{
+}
+
+impl<Number, ExponentType> PartialOrd for DerivedValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: PartialOrd,
+{
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        assert_eq!(self.unit, other.unit);
+        self.number.partial_cmp(&other.number)
+    }
+}
+
+impl<Number, ExponentType> Ord for DerivedValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: Ord,
+{
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        assert_eq!(self.unit, other.unit);
+        self.number.cmp(&other.number)
+    }
+}
+
+impl<Number, ExponentType> fmt::Debug for DerivedValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
+    Number: fmt::Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("DerivedValue")
+            .field("unit", &self.unit)
+            .field("number", &self.number)
+            .finish()
+    }
+}
+
+impl<ExponentType, Number> Add for DerivedValue<Number, ExponentType>
+where
+    ExponentType: UnitExponent,
     Number: Add<Output = Number>,
 {
-    type Output = Result<Self, UnitMismatch>;
+    type Output = Result<Self, UnitMismatch<ExponentType>>;
 
     fn add(self, rhs: Self) -> Self::Output {
         if self.unit == rhs.unit {
@@ -176,11 +319,12 @@ where
     }
 }
 
-impl<Number> Sub for DerivedValue<Number>
+impl<ExponentType, Number> Sub for DerivedValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Sub<Output = Number>,
 {
-    type Output = Result<Self, UnitMismatch>;
+    type Output = Result<Self, UnitMismatch<ExponentType>>;
 
     fn sub(self, rhs: Self) -> Self::Output {
         if self.unit == rhs.unit {
@@ -197,8 +341,9 @@ where
     }
 }
 
-impl<Number> Mul for DerivedValue<Number>
+impl<ExponentType, Number> Mul for DerivedValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Mul<Output = Number>,
 {
     type Output = Self;
@@ -211,8 +356,9 @@ where
     }
 }
 
-impl<Number> Div for DerivedValue<Number>
+impl<ExponentType, Number> Div for DerivedValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Div<Output = Number>,
 {
     type Output = Self;
@@ -225,7 +371,7 @@ where
     }
 }
 
-pub const UNITLESS: DerivedUnit = DerivedUnit {
+pub const UNITLESS: DerivedUnit<i8> = DerivedUnit {
     base: base::UNITLESS,
     hertz: 0,
     newton: 0,

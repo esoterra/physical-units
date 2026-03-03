@@ -1,10 +1,17 @@
 use core::fmt;
 
-use crate::{base, derived};
+use crate::{
+    base,
+    derived::{self, DerivedUnit},
+    exponents::{ExponentParts, UnitExponent},
+};
 
-impl fmt::Debug for base::BaseUnit {
+impl<ExponentType> fmt::Debug for base::BaseUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if *self == base::UNITLESS {
+        if *self == Self::unitless() {
             return write!(f, "BaseUnit::UNITLESS");
         }
 
@@ -22,11 +29,11 @@ impl fmt::Debug for base::BaseUnit {
 
         let mut is_first = true;
         for (n, symbol) in components {
-            if n != 0 {
+            if n != ExponentType::ZERO {
                 if !is_first {
                     write!(f, "⋅")?;
                 }
-                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                write!(f, "{symbol}{}", n.to_parts())?;
                 is_first = false;
             }
         }
@@ -35,9 +42,12 @@ impl fmt::Debug for base::BaseUnit {
     }
 }
 
-impl fmt::Display for base::BaseUnit {
+impl<ExponentType> fmt::Display for base::BaseUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if *self == base::UNITLESS {
+        if *self == Self::unitless() {
             return write!(f, "Unitless");
         }
 
@@ -54,16 +64,19 @@ impl fmt::Display for base::BaseUnit {
         let mut is_first = true;
         for (n, symbol) in components.iter() {
             let n = *n;
-            if n > 0 {
+            if n > ExponentType::ZERO {
                 if !is_first {
                     write!(f, "⋅")?;
                 }
-                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                write!(f, "{symbol}{}", n.to_parts())?;
                 is_first = false;
             }
         }
 
-        let negatives = components.iter().filter(|(n, _)| *n < 0).count();
+        let negatives = components
+            .iter()
+            .filter(|(n, _)| *n < ExponentType::ZERO)
+            .count();
         if negatives != 0 {
             write!(f, "/")?;
 
@@ -74,11 +87,11 @@ impl fmt::Display for base::BaseUnit {
             let mut is_first = true;
             for (n, symbol) in components.iter() {
                 let n = -*n;
-                if n > 0 {
+                if n > ExponentType::ZERO {
                     if !is_first {
                         write!(f, "⋅")?;
                     }
-                    write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                    write!(f, "{symbol}{}", n.to_parts())?;
                     is_first = false;
                 }
             }
@@ -104,9 +117,12 @@ where
     }
 }
 
-impl fmt::Debug for derived::DerivedUnit {
+impl<ExponentType> fmt::Debug for derived::DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if *self == derived::UNITLESS {
+        if *self == DerivedUnit::unitless() {
             return write!(f, "DerivedUnit::UNITLESS");
         }
 
@@ -142,11 +158,11 @@ impl fmt::Debug for derived::DerivedUnit {
 
         let mut is_first = true;
         for (n, symbol) in components {
-            if n != 0 {
+            if n != ExponentType::ZERO {
                 if !is_first {
                     write!(f, "⋅")?;
                 }
-                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                write!(f, "{symbol}{}", n.to_parts())?;
                 is_first = false;
             }
         }
@@ -196,7 +212,7 @@ impl fmt::Display for derived::DerivedUnit {
                 if !is_first {
                     write!(f, "⋅")?;
                 }
-                write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                write!(f, "{symbol}{}", n.to_parts())?;
                 is_first = false;
             }
         }
@@ -216,7 +232,7 @@ impl fmt::Display for derived::DerivedUnit {
                     if !is_first {
                         write!(f, "⋅")?;
                     }
-                    write!(f, "{symbol}{}", SignedSuperscript { n })?;
+                    write!(f, "{symbol}{}", n.to_parts())?;
                     is_first = false;
                 }
             }
@@ -242,29 +258,25 @@ where
     }
 }
 
-struct SignedSuperscript {
-    n: i8,
-}
-
-impl fmt::Display for SignedSuperscript {
+impl fmt::Display for ExponentParts {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if self.n == 0 {
-            return write!(f, "⁰");
-        }
-        if self.n == 1 {
-            return Ok(());
+        if self.percent_part == 0 {
+            if self.whole_part == 0 {
+                return write!(f, "⁰");
+            }
+            if self.whole_part == 1 {
+                return Ok(());
+            }
         }
 
         // Handle negatives
-        let n = if self.n < 0 {
+        if !self.sign_positive {
             write!(f, "⁻")?;
-            -self.n as u8
-        } else {
-            self.n as u8
-        };
+        }
 
         // Numbers are in the range of 1-128
         // so we can use a simple version of decimal conversion
+        let n = self.whole_part;
         let hundreds = n / 100; // Will always be zero or 1
         let n = n - 100 * hundreds;
         let tens = n / 10; // Will be 0-9
@@ -278,6 +290,18 @@ impl fmt::Display for SignedSuperscript {
             SuperscriptDigit { digit: tens }.fmt(f)?;
         }
         SuperscriptDigit { digit: ones }.fmt(f)?;
+
+        //
+        let m = self.percent_part;
+        let tenths = m / 10;
+        let hundredths = m % 10;
+        if tenths != 0 || hundredths != 0 {
+            write!(f, "⋅")?;
+            SuperscriptDigit { digit: tenths }.fmt(f)?;
+            if hundredths != 0 {
+                SuperscriptDigit { digit: hundredths }.fmt(f)?;
+            }
+        }
         Ok(())
     }
 }

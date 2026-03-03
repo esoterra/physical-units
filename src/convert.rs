@@ -1,47 +1,64 @@
-use crate::{base, derived, identities::BASIC_IDENTITIES};
+use crate::{
+    base,
+    derived::{self, DerivedUnit},
+    exponents::UnitExponent,
+    identities::basic_identities,
+};
 
-impl From<base::BaseUnit> for derived::DerivedUnit {
-    fn from(value: base::BaseUnit) -> Self {
+impl<ExponentType> From<base::BaseUnit<ExponentType>> for derived::DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    fn from(value: base::BaseUnit<ExponentType>) -> Self {
         value.to_derived()
     }
 }
 
-impl base::BaseUnit {
-    pub const fn to_derived(self) -> derived::DerivedUnit {
+impl<ExponentType> base::BaseUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    pub fn to_derived(self) -> derived::DerivedUnit<ExponentType> {
         derived::DerivedUnit {
             base: self,
-            ..derived::UNITLESS
+            ..DerivedUnit::unitless()
         }
     }
 }
 
-impl From<derived::DerivedUnit> for base::BaseUnit {
-    fn from(value: derived::DerivedUnit) -> Self {
+impl<ExponentType> From<derived::DerivedUnit<ExponentType>> for base::BaseUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    fn from(value: derived::DerivedUnit<ExponentType>) -> Self {
         value.to_base()
     }
 }
 
-impl derived::DerivedUnit {
-    pub const fn to_base(self) -> base::BaseUnit {
+impl<ExponentType> derived::DerivedUnit<ExponentType>
+where
+    ExponentType: UnitExponent,
+{
+    pub fn to_base(self) -> base::BaseUnit<ExponentType> {
         self.base
-            .multiply(base::HERTZ.pow(self.hertz))
-            .multiply(base::NEWTON.pow(self.newton))
-            .multiply(base::PASCAL.pow(self.pascal))
-            .multiply(base::JOULE.pow(self.joule))
-            .multiply(base::WATT.pow(self.watt))
-            .multiply(base::COULOMB.pow(self.coulomb))
-            .multiply(base::VOLT.pow(self.volt))
-            .multiply(base::FARAD.pow(self.farad))
-            .multiply(base::OHM.pow(self.ohm))
-            .multiply(base::SIEMENS.pow(self.siemens))
-            .multiply(base::WEBER.pow(self.weber))
-            .multiply(base::TESLA.pow(self.tesla))
-            .multiply(base::HENRY.pow(self.henry))
-            .multiply(base::LUX.pow(self.lux))
-            .multiply(base::BECQUEREL.pow(self.becquerel))
-            .multiply(base::GRAY.pow(self.gray))
-            .multiply(base::SIEVERT.pow(self.sievert))
-            .multiply(base::KATAL.pow(self.katal))
+            .multiply(base::HERTZ.int_pow(self.hertz))
+            .multiply(base::NEWTON.int_pow(self.newton))
+            .multiply(base::PASCAL.int_pow(self.pascal))
+            .multiply(base::JOULE.int_pow(self.joule))
+            .multiply(base::WATT.int_pow(self.watt))
+            .multiply(base::COULOMB.int_pow(self.coulomb))
+            .multiply(base::VOLT.int_pow(self.volt))
+            .multiply(base::FARAD.int_pow(self.farad))
+            .multiply(base::OHM.int_pow(self.ohm))
+            .multiply(base::SIEMENS.int_pow(self.siemens))
+            .multiply(base::WEBER.int_pow(self.weber))
+            .multiply(base::TESLA.int_pow(self.tesla))
+            .multiply(base::HENRY.int_pow(self.henry))
+            .multiply(base::LUX.int_pow(self.lux))
+            .multiply(base::BECQUEREL.int_pow(self.becquerel))
+            .multiply(base::GRAY.int_pow(self.gray))
+            .multiply(base::SIEVERT.int_pow(self.sievert))
+            .multiply(base::KATAL.int_pow(self.katal))
     }
 }
 
@@ -54,11 +71,12 @@ impl<Number> From<base::BaseValue<Number>> for derived::DerivedValue<Number> {
     }
 }
 
-impl<Number> base::BaseValue<Number>
+impl<ExponentType, Number> base::BaseValue<Number, ExponentType>
 where
+    ExponentType: UnitExponent,
     Number: Copy,
 {
-    pub const fn to_derived(self) -> derived::DerivedValue<Number> {
+    pub fn to_derived(self) -> derived::DerivedValue<Number, ExponentType> {
         derived::DerivedValue {
             unit: self.unit.to_derived(),
             number: self.number,
@@ -85,7 +103,7 @@ impl derived::DerivedUnit {
     pub fn simplify(self) -> Self {
         let mut output = self;
 
-        for identity in BASIC_IDENTITIES {
+        for identity in basic_identities() {
             let after_mul = output.multiply(identity);
             let after_div = output.divide(identity);
             if after_mul.magnitude() < output.magnitude() {
