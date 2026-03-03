@@ -75,13 +75,13 @@ impl<ExponentType: UnitExponent> BaseUnit<ExponentType> {
 
     pub fn root(self, root: i8) -> Self {
         Self {
-            kilogram: self.kilogram / root,
-            meter: self.meter / root,
-            second: self.second / root,
-            mole: self.mole / root,
-            ampere: self.ampere / root,
-            kelvin: self.kelvin / root,
-            candela: self.candela / root,
+            kilogram: self.kilogram.strict_div(root),
+            meter: self.meter.strict_div(root),
+            second: self.second.strict_div(root),
+            mole: self.mole.strict_div(root),
+            ampere: self.ampere.strict_div(root),
+            kelvin: self.kelvin.strict_div(root),
+            candela: self.candela.strict_div(root),
         }
     }
 

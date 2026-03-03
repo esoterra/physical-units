@@ -24,7 +24,6 @@ pub trait UnitExponent:
     + Add<Output = Self>
     + Sub<Output = Self>
     + Mul<i8, Output = Self>
-    + Div<i8, Output = Self>
     + Debug
 {
     const ZERO: Self;
@@ -33,6 +32,8 @@ pub trait UnitExponent:
     /// Takes an integer in the range (-32, 31) inclusive-inclusive
     /// and produces a FractionalExponent with that value.
     fn from_int(int: i8) -> Self;
+
+    fn strict_div(self, denominator: i8) -> Self;
 
     fn to_parts(self) -> ExponentParts;
 
@@ -51,6 +52,14 @@ impl UnitExponent for i8 {
 
     fn from_int(int: i8) -> Self {
         int
+    }
+
+    fn strict_div(self, denominator: i8) -> Self {
+        let remainder = self % denominator;
+        if remainder != 0 {
+            panic!("Could not compute integer {}/{} without leaving remainder {}", self, denominator, remainder);
+        }
+        self / denominator
     }
 
     fn to_parts(self) -> ExponentParts {
@@ -182,6 +191,10 @@ impl UnitExponent for FractionalExponent {
 
     fn from_int(int: i8) -> Self {
         Self::from_int(int)
+    }
+    
+    fn strict_div(self, denominator: i8) -> Self {
+        self.const_div(denominator)
     }
 
     fn to_parts(self) -> ExponentParts {

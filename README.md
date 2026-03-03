@@ -44,7 +44,7 @@ which can be useful for talking about common combinations of base units.
 | watt | W | power, radiant flux | kg⋅m²⋅s⁻³ |
 | coulomb | C | electrical charge | s⋅A |
 | volt | V | voltage, electrical potential difference | kg⋅m²⋅s⁻³⋅A⁻¹ |
-| farad | F | electrical capacitance | kg⁻¹⋅m⁻2⋅s³⋅A² |
+| farad | F | electrical capacitance | kg⁻¹⋅m⁻²⋅s³⋅A² |
 | ohm | Ω | electrical resistance | kg⋅m²⋅s⁻³⋅A⁻² |
 | siemens | S | electrical conductance | kg⁻¹⋅m⁻²⋅s³⋅A² |
 | weber | Wb | magnetic flux | kg⋅m²⋅s⁻²⋅A⁻¹ |
