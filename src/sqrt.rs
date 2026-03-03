@@ -8,6 +8,8 @@ macro_rules! impl_sqrt {
         where
             ExponentType: UnitExponent
         {
+            /// Computes the square root of a value and its unit.
+            /// Fails if either the new value or unit cannot be expressed.
             pub fn sqrt(self) -> Self {
               Self {
                 unit: self.unit.root(2),
@@ -20,6 +22,8 @@ macro_rules! impl_sqrt {
         where
             ExponentType: UnitExponent
         {
+            /// Computes the square root of a value and its unit.
+            /// Fails if either the new value or unit cannot be expressed.
             pub fn sqrt(self) -> Self {
               Self {
                 unit: self.unit.root(2),
@@ -48,7 +52,9 @@ mod tests {
   use crate::{base::{self, BaseUnit}, exponents::FractionalExponent};
   use super::*;
 
-  fn test_sqrts<Unit: Into<BaseUnit<FractionalExponent>>>(input: u8, input_unit: Unit, output: u8, output_unit: Unit) {
+  type FracUnit = BaseUnit<FractionalExponent>;
+
+  fn test_sqrts(input: u8, input_unit: FracUnit, output: u8, output_unit: FracUnit) {
     let input_unit = input_unit.into();
     let output_unit = output_unit.into();
 
@@ -67,6 +73,9 @@ mod tests {
 
   #[test]
   fn simple_sqrts() {
-    test_sqrts(100, base::METER * base::METER, 10, base::METER);
+    test_sqrts(100, (base::METER * base::METER).into(), 10, base::METER.into());
+    let meters: FracUnit = base::METER.into();
+    test_sqrts(4, base::METER.into(), 2, meters.root(2));
+    test_sqrts(4, base::METER.into(), 2, base::METER.root(2).into());
   }
 }
